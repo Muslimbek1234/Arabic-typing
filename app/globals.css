@@ -1,26 +1,339 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
 
+/* ── Theme tokens ─────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #050508;
+  --bg-card: rgba(12, 12, 20, 0.65);
+  --accent-blue: #2563eb;
+  --accent-blue-light: #3b82f6;
+  --accent-blue-glow: rgba(37, 99, 235, 0.35);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --border-subtle: rgba(37, 99, 235, 0.15);
+  --border-hover: rgba(37, 99, 235, 0.4);
+  --correct-green: #22c55e;
+  --error-red: #ef4444;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Base ──────────────────────────────────────────────────────── */
+body {
+  background-color: var(--bg-primary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-primary);
+  overflow-x: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── Scrollbar ────────────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1e3a5f #0c0c14;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0c0c14;
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #1e3a5f;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #2563eb;
+}
+
+/* ── Keyframes ────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes typewriter-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes float-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 18px var(--accent-blue-glow));
+    transform: translateY(0);
+  }
+  50% {
+    filter: drop-shadow(0 0 32px var(--accent-blue-glow));
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+@keyframes xp-float {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-30px) scale(1.2);
+  }
+}
+
+@keyframes combo-pulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(249, 115, 22, 0.4);
+  }
+}
+
+@keyframes rank-glow {
+  0%, 100% {
+    text-shadow: 0 0 8px currentColor;
+  }
+  50% {
+    text-shadow: 0 0 20px currentColor;
+  }
+}
+
+/* ── Glow Card (Glassmorphism) ────────────────────────────────── */
+.glow-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glow-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.2),
+    transparent 40%,
+    transparent 60%,
+    rgba(37, 99, 235, 0.1)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glow-card:hover {
+  border-color: var(--border-hover);
+  box-shadow:
+    0 0 30px rgba(37, 99, 235, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+/* ── Character States (Typing Practice) ──────────────────────── */
+.char-correct {
+  color: var(--correct-green);
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+  transition: all 0.15s ease;
+}
+
+.char-error {
+  color: var(--error-red);
+  text-decoration: underline;
+  text-decoration-color: var(--error-red);
+  text-underline-offset: 4px;
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+  transition: all 0.15s ease;
+}
+
+.char-current {
+  color: var(--accent-blue-light);
+  animation: typewriter-blink 1s ease-in-out infinite;
+  text-shadow: 0 0 12px var(--accent-blue-glow);
+  border-bottom: 2px solid var(--accent-blue);
+  padding-bottom: 2px;
+}
+
+.char-pending {
+  color: #475569;
+  transition: color 0.15s ease;
+}
+
+/* ── Space Character States ──────────────────────────────────── */
+.space-char-correct {
+  color: var(--correct-green) !important;
+  background-color: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.05);
+}
+
+.space-char-error {
+  color: var(--error-red) !important;
+  background-color: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.05);
+}
+
+.space-char-current {
+  color: var(--accent-blue-light) !important;
+  background-color: rgba(59, 130, 246, 0.15);
+  border: 2px solid var(--accent-blue) !important;
+  text-shadow: 0 0 12px var(--accent-blue-glow);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.25);
+  animation: typewriter-blink 1s ease-in-out infinite;
+}
+
+.space-char-pending {
+  color: rgba(148, 163, 184, 0.3) !important;
+  background-color: rgba(255, 255, 255, 0.01);
+  border: 1px dashed rgba(148, 163, 184, 0.2) !important;
+}
+
+.space-char-idle {
+  color: rgba(71, 85, 105, 0.2) !important;
+  background-color: transparent;
+  border: 1px dashed rgba(71, 85, 105, 0.1) !important;
+}
+
+/* ── Key Expecting Highlights ───────────────────────────────── */
+@keyframes key-pulse-glow {
+  0%, 100% {
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.15);
+    background-color: rgba(99, 102, 241, 0.02);
+  }
+  50% {
+    border-color: #6366f1;
+    box-shadow: 0 0 18px rgba(99, 102, 241, 0.4);
+    background-color: rgba(99, 102, 241, 0.12);
+  }
+}
+
+.key-expecting {
+  animation: key-pulse-glow 1.5s ease-in-out infinite;
+  color: #a5b4fc !important;
+  font-weight: 800;
+}
+
+/* ── Keyboard Highlight ───────────────────────────────────────── */
+.key-highlight {
+  background: linear-gradient(135deg, var(--accent-blue), #1d4ed8) !important;
+  box-shadow:
+    0 0 20px var(--accent-blue-glow),
+    0 0 40px rgba(37, 99, 235, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: scale(1.08);
+  border-color: var(--accent-blue-light) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Progress Fill ────────────────────────────────────────────── */
+.progress-fill {
+  background: linear-gradient(
+    90deg,
+    var(--accent-blue),
+    var(--accent-blue-light),
+    #60a5fa,
+    var(--accent-blue-light),
+    var(--accent-blue)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+  border-radius: 9999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Gamification Effects ─────────────────────────────────────── */
+.shake-error {
+  animation: shake 0.4s ease-in-out;
+}
+
+.xp-float {
+  animation: xp-float 0.6s ease-out forwards;
+}
+
+.combo-badge {
+  animation: combo-pulse 1.5s ease-in-out infinite;
+}
+
+.rank-glow {
+  animation: rank-glow 2s ease-in-out infinite;
+}
+
+/* ── Utility ──────────────────────────────────────────────────── */
+.arabic-text {
+  font-family: 'Noto Sans Arabic', sans-serif;
+  direction: rtl;
+  line-height: 1.8;
+}
+
+.text-glow-blue {
+  text-shadow: 0 0 20px var(--accent-blue-glow), 0 0 40px rgba(37, 99, 235, 0.15);
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(37, 99, 235, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+::selection {
+  background: rgba(37, 99, 235, 0.3);
+  color: #fff;
+}
+
+/* ── Letter Card Interactive Hover ────────────────────────────── */
+.letter-card-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.letter-card-hover:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.2), 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ── At-Tanal Badge Glow ──────────────────────────────────────── */
+.tanal-badge {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15));
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
