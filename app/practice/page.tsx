@@ -384,8 +384,8 @@ function PracticeContent() {
     let passed = false;
     if (level === 1) {
       if (isTest) {
-        // Exit Test L1: Needs 85% accuracy and 20+ WPM
-        passed = finalAccuracy >= 85 && finalWpm >= 20;
+        // Exit Test L1: Needs 85% accuracy and 18+ WPM
+        passed = finalAccuracy >= 85 && finalWpm >= 18;
       } else {
         // Letter drills: Needs 85% accuracy and 18+ WPM
         passed = finalAccuracy >= 85 && finalWpm >= 18;
