@@ -12,6 +12,10 @@ import {
   saveSession,
   getProgressState,
   completeStage,
+  resetProgress,
+  incrementStageAttempts,
+  resetStageAttempts,
+  clearAllAttempts,
 } from '../../lib/storage';
 import Header from '../../components/Header';
 import StatsPanel from '../../components/StatsPanel';
@@ -383,8 +387,8 @@ function PracticeContent() {
         // Exit Test L1: Needs 85% accuracy and 20+ WPM
         passed = finalAccuracy >= 85 && finalWpm >= 20;
       } else {
-        // Letter drills: Needs 85% accuracy (to ensure they know the keys)
-        passed = finalAccuracy >= 85;
+        // Letter drills: Needs 85% accuracy and 18+ WPM
+        passed = finalAccuracy >= 85 && finalWpm >= 18;
       }
     } else if (level === 2) {
       // Level 2 Words: Needs 90% accuracy and 25+ WPM (Yaxshi zo'r natija)
@@ -407,6 +411,33 @@ function PracticeContent() {
 
     const nextUrl = passed ? getNextStageUrl(level, stage) : null;
 
+    // Track failed attempts for 10-failure reset rule (Level 1 only)
+    if (level === 1 && !passed) {
+      const attempts = incrementStageAttempts(level, stage);
+      if (attempts >= 10) {
+        // 10 consecutive failures: full reset to beginning
+        resetProgress();
+        clearAllAttempts();
+        setResults({
+          wpm: finalWpm,
+          accuracy: finalAccuracy,
+          errors: mistakes,
+          feedback: '⚠️ 10 ta urinishda ham o\'ta olmadingiz. Barcha jarayon boshidan boshlanadi. Qaytadan urinib ko\'ring!',
+          unlockedNext: false,
+          nextStageUrl: null,
+          passed: false,
+        });
+        // Redirect to home after a short delay
+        setTimeout(() => {
+          router.push('/');
+        }, 3000);
+        return;
+      }
+    } else if (level === 1 && passed) {
+      // Success: reset attempt counter for this stage
+      resetStageAttempts(level, stage);
+    }
+
     setResults({
       wpm: finalWpm,
       accuracy: finalAccuracy,
@@ -414,9 +445,9 @@ function PracticeContent() {
       feedback,
       unlockedNext,
       nextStageUrl: nextUrl,
-      passed, // Pass the correct passed state
+      passed,
     });
-  }, [level, stage, isTest]);
+  }, [level, stage, isTest, router]);
 
   // Handle typing inputs, cumulative statistics and combo system
   const handleTypingChange = useCallback(

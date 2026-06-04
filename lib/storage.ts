@@ -4,6 +4,7 @@
 export const HISTORY_KEY = 'arabic_typing_history_v4';
 export const SKILL_KEY = 'arabic_typing_skill';
 export const PROGRESS_KEY = 'arabic_typing_progress_v3'; // v3: 32 letters + exit test
+export const ATTEMPTS_KEY = 'arabic_typing_stage_attempts';
 
 const MAX_HISTORY_ITEMS = 50;
 
@@ -214,5 +215,72 @@ export function clearHistory(): void {
     localStorage.removeItem(HISTORY_KEY);
   } catch (error) {
     console.error('Failed to clear history:', error);
+  }
+}
+
+// === Stage Attempt Tracking (for 10-failure reset rule) ===
+
+function getAttemptsKey(level: number, stage: number): string {
+  return `${level}_${stage}`;
+}
+
+/**
+ * Get number of consecutive failed attempts for a specific stage
+ */
+export function getStageAttempts(level: number, stage: number): number {
+  if (!isBrowser()) return 0;
+  try {
+    const raw = localStorage.getItem(ATTEMPTS_KEY);
+    if (!raw) return 0;
+    const data = JSON.parse(raw);
+    return data[getAttemptsKey(level, stage)] || 0;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Increment failed attempts for a stage. Returns the new count.
+ */
+export function incrementStageAttempts(level: number, stage: number): number {
+  if (!isBrowser()) return 0;
+  try {
+    const raw = localStorage.getItem(ATTEMPTS_KEY);
+    const data = raw ? JSON.parse(raw) : {};
+    const key = getAttemptsKey(level, stage);
+    const newCount = (data[key] || 0) + 1;
+    data[key] = newCount;
+    localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(data));
+    return newCount;
+  } catch {
+    return 0;
+  }
+}
+
+/**
+ * Reset attempts counter for a specific stage (called on success)
+ */
+export function resetStageAttempts(level: number, stage: number): void {
+  if (!isBrowser()) return;
+  try {
+    const raw = localStorage.getItem(ATTEMPTS_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    delete data[getAttemptsKey(level, stage)];
+    localStorage.setItem(ATTEMPTS_KEY, JSON.stringify(data));
+  } catch {
+    // ignore
+  }
+}
+
+/**
+ * Clear all attempt counters (called on full reset)
+ */
+export function clearAllAttempts(): void {
+  if (!isBrowser()) return;
+  try {
+    localStorage.removeItem(ATTEMPTS_KEY);
+  } catch {
+    // ignore
   }
 }
