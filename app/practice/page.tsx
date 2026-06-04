@@ -384,10 +384,10 @@ function PracticeContent() {
     let passed = false;
     if (level === 1) {
       if (isTest) {
-        // Exit Test L1: Needs 85% accuracy and 18+ WPM
+        // Exit Test L1: Needs 85% accuracy and 18 WPM
         passed = finalAccuracy >= 85 && finalWpm >= 18;
       } else {
-        // Letter drills: Needs 85% accuracy and 18+ WPM
+        // Letter drills: Needs 85% accuracy and 18 WPM
         passed = finalAccuracy >= 85 && finalWpm >= 18;
       }
     } else if (level === 2) {
@@ -744,6 +744,7 @@ function PracticeContent() {
           onNextStage={results.nextStageUrl ? handleNextStage : undefined}
           unlockedNext={results.unlockedNext}
           passed={results.passed} // Pass passed prop
+          level={level}
         />
       )}
 

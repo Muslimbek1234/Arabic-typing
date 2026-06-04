@@ -14,6 +14,7 @@ interface ResultsModalProps {
   onNextStage?: () => void;
   unlockedNext?: boolean;
   passed: boolean;
+  level?: number;
 }
 
 export default function ResultsModal({
@@ -28,6 +29,7 @@ export default function ResultsModal({
   onNextStage,
   unlockedNext = false,
   passed,
+  level = 1,
 }: ResultsModalProps) {
   const getEmoji = () => {
     if (accuracy >= 98) return '🏆';
@@ -38,9 +40,9 @@ export default function ResultsModal({
 
   const skillDiff = skillLevel - prevSkillLevel;
 
-  // At-Tanal standards comparison
-  const atTanalWpmTarget = 30;
-  const atTanalAccuracyTarget = 90;
+  // At-Tanal standards comparison based on Level
+  const atTanalWpmTarget = level === 1 ? 18 : level === 2 ? 25 : 30;
+  const atTanalAccuracyTarget = level === 1 ? 85 : 90;
   const wpmMet = wpm >= atTanalWpmTarget;
   const accMet = accuracy >= atTanalAccuracyTarget;
 
