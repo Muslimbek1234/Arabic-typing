@@ -127,13 +127,29 @@ export function getProgressState(): ProgressState {
 
   try {
     const raw = localStorage.getItem(PROGRESS_KEY);
-    if (!raw) return { unlockedLevel: 1, unlockedStage: 1 };
+    let state: ProgressState = { unlockedLevel: 1, unlockedStage: 1 };
 
-    const parsed = JSON.parse(raw);
-    return {
-      unlockedLevel: parsed.unlockedLevel ?? 1,
-      unlockedStage: parsed.unlockedStage ?? 1,
-    };
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = {
+        unlockedLevel: parsed.unlockedLevel ?? 1,
+        unlockedStage: parsed.unlockedStage ?? 1,
+      };
+    }
+
+    // Avtomatik ravishda Level 2 ni ochish:
+    // Agar foydalanuvchi tarixida Level 1 bo'yicha kamida 18 WPM natija bo'lsa
+    // va hali ham Level 1 qulflanib turgan bo'lsa, Level 2 ni ochib beramiz.
+    if (state.unlockedLevel === 1) {
+      const history = getHistory();
+      const hasPassedL1 = history.some((s) => s.level === 1 && s.wpm >= 18);
+      if (hasPassedL1) {
+        state = { unlockedLevel: 2, unlockedStage: 1 };
+        localStorage.setItem(PROGRESS_KEY, JSON.stringify(state));
+      }
+    }
+
+    return state;
   } catch {
     return { unlockedLevel: 1, unlockedStage: 1 };
   }

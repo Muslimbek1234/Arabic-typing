@@ -270,6 +270,17 @@ export default function HomePage() {
                   <p className="text-xs text-slate-400 mt-1 max-w-xs">
                     Uni ochish uchun 1-darajaning barcha harflarini o&apos;rganib, nazorat testini topshiring!
                   </p>
+                  <button
+                    onClick={() => {
+                      const nextState = { unlockedLevel: 2, unlockedStage: 1 };
+                      localStorage.setItem('arabic_typing_progress_v3', JSON.stringify(nextState));
+                      setProgress(nextState);
+                      window.location.reload();
+                    }}
+                    className="mt-3 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 border border-blue-500/30 px-3 py-1.5 text-[11px] font-bold text-blue-300 transition-all cursor-pointer"
+                  >
+                    🔓 2-Darajani qo&apos;lda ochish
+                  </button>
                 </div>
               )}
 
@@ -345,6 +356,17 @@ export default function HomePage() {
                   <p className="text-xs text-slate-400 mt-1 max-w-xs">
                     Uni ochish uchun 2-darajaning barcha so&apos;zli darslarini muvaffaqiyatli topshiring!
                   </p>
+                  <button
+                    onClick={() => {
+                      const nextState = { unlockedLevel: 3, unlockedStage: 1 };
+                      localStorage.setItem('arabic_typing_progress_v3', JSON.stringify(nextState));
+                      setProgress(nextState);
+                      window.location.reload();
+                    }}
+                    className="mt-3 rounded-lg bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/30 px-3 py-1.5 text-[11px] font-bold text-indigo-300 transition-all cursor-pointer"
+                  >
+                    🔓 3-Darajani qo&apos;lda ochish
+                  </button>
                 </div>
               )}
 
