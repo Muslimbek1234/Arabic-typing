@@ -29,18 +29,7 @@ export default function HomePage() {
 
   useEffect(() => {
     const currentProgress = getProgressState();
-    // Foydalanuvchi 18 tezlik (WPM) qilib bo'lgan bo'lsa, Level 2 ochiladi.
-    // Biz storage-dan foydalanuvchining barcha sessiyalarini tekshiramiz:
-    // agar Level 1 (exit test yoki darslar) bo'yicha kamida bitta seansda 18+ WPM bo'lgan bo'lsa
-    // va hozir Level 1 da qolib ketgan bo'lsa, 2-bosqichni ochamiz (Level 2, Stage 1).
-    // Shuningdek, foydalanuvchi talabiga ko'ra hozir to'g'ridan-to'g'ri Level 2 ni ochib qo'yamiz.
-    if (currentProgress.unlockedLevel === 1) {
-      const nextState = { unlockedLevel: 2, unlockedStage: 1 };
-      localStorage.setItem('arabic_typing_progress_v3', JSON.stringify(nextState));
-      setProgress(nextState);
-    } else {
-      setProgress(currentProgress);
-    }
+    setProgress(currentProgress);
   }, []);
 
   const handleReset = () => {

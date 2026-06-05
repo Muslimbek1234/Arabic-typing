@@ -216,6 +216,7 @@ export function resetProgress(): void {
     localStorage.removeItem(PROGRESS_KEY);
     localStorage.removeItem(SKILL_KEY);
     localStorage.removeItem(HISTORY_KEY);
+    localStorage.removeItem(ATTEMPTS_KEY);
   } catch (error) {
     console.error('Failed to reset progress:', error);
   }

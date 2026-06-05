@@ -118,7 +118,7 @@ export default function ResultsModal({
                 <div className="text-[10px] font-bold uppercase tracking-wider mb-1 text-slate-400">Tezlik</div>
                 <div className="flex items-baseline gap-1">
                   <span className={`text-lg font-extrabold ${wpmMet ? 'text-emerald-400' : 'text-orange-400'}`}>{wpm}</span>
-                  <span className="text-[10px] text-slate-500">/ {atTanalWpmTarget}+ WPM</span>
+                  <span className="text-[10px] text-slate-500">/ {atTanalWpmTarget}{level === 1 ? '' : '+'} WPM</span>
                 </div>
                 <span className={`text-[9px] font-bold mt-1 block ${wpmMet ? 'text-emerald-400' : 'text-orange-400'}`}>
                   {wpmMet ? '✅ Yetilgan' : '⚠️ Yana mashq kerak'}
